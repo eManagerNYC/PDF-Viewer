@@ -4,4 +4,4 @@ Alternative, lightweight user interface for PDF.js using Twitter Bootstrap and t
 
 * [bootstrap-pdf-viewer](https://github.com/justindarc/bootstrap-pdf-viewer)
 
-uses shortcode `[bpdf]`
+uses shortcode `[bpdf url="path/to/file.pdf"]`
