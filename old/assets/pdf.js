@@ -1,3 +1,4 @@
+jQuery(document).ready(function($) {
 /* -*- Mode: Java; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */
 /* Copyright 2012 Mozilla Foundation
@@ -38345,3 +38346,4 @@ var JpegImage = (function jpegImage() {
 
 
 }).call((typeof window === 'undefined') ? this : window);
+});
