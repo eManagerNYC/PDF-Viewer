@@ -10,7 +10,8 @@ Author URI: http://www.turneremanager.com
 $WPBootstrapPDFViewer = new BootstrapPDFViewer();
 
 class BootstrapPDFViewer {
-
+  protected $transurl;
+  protected $transient_key;
   public function __construct() {
     add_action( 'wp_enqueue_scripts', array($this, 'viewer_scripts'), 10, 0  );
     add_shortcode('bpdf', array($this, 'viewer_shortcode'));
@@ -31,13 +32,13 @@ class BootstrapPDFViewer {
     extract( shortcode_atts( array(
       'url' => plugins_url('sample.pdf', __FILE__),
     ), $atts, 'bpdf' ) );
-    $filestring = self::strLength(basename($url, ".pdf"),15); 
-    $transient_key = 'em_pdf-'.$filestring;
-    if ( $transurl == '' ) {
-      $transurl = $url;
-      set_transient( $transient_key, $transurl, 60 * 60 * 24 );
+    $filestring = self::strLength(basename($url, ".pdf"),10); 
+    $this->transient_key = 'em_pdf-'.$filestring;
+    if ( $this->transurl == '' ) {
+      $this->transurl = $url;
+      set_transient( $transient_key, $this->transurl, 60 * 60 * 24 );
     }
-    $transurl = get_transient( $transient_key );
+    $this->transurl = get_transient( $transient_key );
     
     $v = '';
     $v .= '<div class="row">
@@ -47,23 +48,26 @@ class BootstrapPDFViewer {
               </div><div class="col-md-4">
                 <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
               </div><div class="col-md-4 pull-right">
-                <a href="'.$transurl.'" class="btn btn-primary"><i class="fa fa-arrows-alt fa-lg"></i></a>
-                <a href="'.$transurl.'" class="btn btn-primary" download><i class="fa fa-cloud-download fa-lg"></i></a>
+                <a href="'.$this->transurl.'" class="btn btn-primary"><i class="fa fa-arrows-alt fa-lg"></i></a>
+                <a href="'.$this->transurl.'" class="btn btn-primary" download><i class="fa fa-cloud-download fa-lg"></i></a>
               </div>
             </div>
             <br><br>
             <center>
             <div style="overflow: scroll" id="pdfviewer">
-              <canvas id="pdfcanvas" style="border:1px solid black; width: 100%"></canvas>
+              <canvas id="pdfcanvas-'.$this->transient_key.'" style="border:1px solid black; width: 100%"></canvas>
             </div>
             </center>';
-
-    $v .= "<script id=\"script\">
+            return $v;
+    }
+  public function viewer_script() {
+    ?>
+    <script id=\"script\">
             //
             // If absolute URL from the remote server is provided, configure the CORS
             // header on that server.
             //
-            var url = '".$transurl."';
+            var url = '<?php echo $this->transurl; ?>';
 
             //
             // Disable workers to avoid yet another cross-origin issue (workers need
@@ -77,14 +81,15 @@ class BootstrapPDFViewer {
             // pdf.js's one, or the pdf.js is executed via eval(), the workerSrc property
             // shall be specified.
             //
-            PDFJS.workerSrc = '" .plugins_url('/pdf.worker.js', __FILE__). "';
+
+            PDFJS.workerSrc = '<?php echo get_template_directory_uri(). '/includes/plugins/pdfviewer/pdf.worker.js'; ?>';
 
             var pdfDoc = null,
                 pageNum = 1,
                 pageRendering = false,
                 pageNumPending = null,
                 scale = 0.8,
-                canvas = document.getElementById('pdfcanvas'),
+                canvas = document.getElementById('pdfcanvas-<?php echo $this->transient_key; ?>'),
                 ctx = canvas.getContext('2d');
             var camera = {
               x: 0,
@@ -164,7 +169,7 @@ class BootstrapPDFViewer {
               // Initial/first page rendering
               renderPage(pageNum);
             });
-          </script>";
-    return $v;
+          </script>
+      <?php
   }
 }
