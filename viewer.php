@@ -14,6 +14,7 @@ class BootstrapPDFViewer {
   protected $tkey;
   public function __construct() {
     add_action( 'wp_enqueue_scripts', array($this, 'viewer_scripts'), 10, 0  );
+    add_action( 'wp_footer', array($this, 'viewer_script'));
     add_shortcode('bpdf', array($this, 'viewer_shortcode'));
   }
   public function viewer_scripts() {
@@ -27,7 +28,7 @@ class BootstrapPDFViewer {
       }else{ 
           return $str; 
       } 
-  } 
+  }
   public function viewer_shortcode( $atts ) {
     extract( shortcode_atts( array(
       'url' => plugins_url('sample.pdf', __FILE__),
@@ -62,7 +63,7 @@ class BootstrapPDFViewer {
     }
   public function viewer_script() {
     ?>
-    <script id=\"script\">
+    <script id="pdfviewer">
             //
             // If absolute URL from the remote server is provided, configure the CORS
             // header on that server.
