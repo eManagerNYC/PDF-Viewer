@@ -1,6 +1,6 @@
 # README #
 
-**[Demo](http://pdf.turneremanager.com/)
+View a [Demo](http://pdf.turneremanager.com/).
 
 **Note:** This plugin requires a theme that uses bootstrap and fontawesome.
 
