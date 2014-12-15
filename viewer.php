@@ -83,7 +83,7 @@ class BootstrapPDFViewer {
             // shall be specified.
             //
 
-            PDFJS.workerSrc = '<?php echo get_template_directory_uri(). '/includes/plugins/pdfviewer/pdf.worker.js'; ?>';
+            PDFJS.workerSrc = '<?php echo plugins_url('/pdf.worker.js', __FILE__); ?>';
 
             var pdfDoc = null,
                 pageNum = 1,
